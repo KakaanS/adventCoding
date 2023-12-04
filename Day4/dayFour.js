@@ -1,22 +1,56 @@
-function calculatePoints(cards) {
+const splitElementParts = (element) => {
+  let outputArray = [];
+  const numbers = element.split(":")[1].trim();
+  outputArray = numbers.split("|");
+  return outputArray;
+};
+
+const calculatePointsForOneCard = (ourNumbers, winningNumbers) => {
+  let points = 0;
+  ourNumbers.forEach((number) => {
+    if (winningNumbers.includes(number)) {
+      if (points === 0) {
+        points = 1;
+      } else {
+        points = points * 2;
+      }
+    }
+  });
+  return points;
+};
+
+cleanUpFromEmptyStrings = (array) => {
+  return array.filter((item) => item !== "");
+};
+
+cleanUpNumberFromWhitespace = (array) => {
+  return array.map((item) => {
+    const n = item.trim();
+    return Number(n);
+  });
+};
+
+splitArrayByWhiteSpace = (array) => {
+  return array.split(" ");
+};
+
+function calculatePoints(cards, index) {
   let totalPoints = 0;
 
   cards.forEach((card) => {
-    const [winningNumbers, numbersYouHave] = card
-      .split("|")
-      .map((part) => part.trim().split(" ").map(Number));
+    const elements = splitElementParts(card);
+    let ourNumbers = splitArrayByWhiteSpace(elements[0]);
+    ourNumbers = cleanUpFromEmptyStrings(ourNumbers);
+    const winningNumbers = elements[1].trim().split(" ").map(Number);
 
-    let points = numbersYouHave.reduce((acc, number) => {
-      if (winningNumbers.includes(number)) {
-        return acc + 2; // Assuming you get 2 points for each matching number
-      }
-      return acc;
-    }, 0);
+    const cardResult = calculatePointsForOneCard(ourNumbers, winningNumbers);
 
-    totalPoints += points;
+    totalPoints += cardResult;
+    console.log("Card " + (index + 1) + ": " + cardResult);
   });
 
-  return totalPoints;
+  console.log("_____________________________");
+  console.log("TotalPoints: ", totalPoints);
 }
 
 const cards = [
@@ -220,6 +254,4 @@ const cards = [
   "Card 198: 58 67 42 84 62  1 65 92 86 23 | 28 36 58 48 17 82 20 63 78 59 34 61 91 21 11 40 83 97 47 89 18 64 70 85 50",
   "Card 199: 74 30 60 87 46 21 69 51 28 96 | 92 64 32 66 65 54 29 85 84  2  6  3 97 37 22 33  1 23 38 88 75 99 17 12 31",
 ];
-
-const totalPoints = calculatePoints(cards);
-console.log(totalPoints);
+calculatePoints(cards);
