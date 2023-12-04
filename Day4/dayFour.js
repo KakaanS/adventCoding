@@ -19,36 +19,29 @@ const calculatePointsForOneCard = (ourNumbers, winningNumbers) => {
   return points;
 };
 
-cleanUpFromEmptyStrings = (array) => {
-  return array.filter((item) => item !== "");
+const splitArrayByWhiteSpace = (numberString) => {
+  const newArray = numberString.split(" ");
+
+  const filteredArray = newArray.filter((item) => item !== "");
+
+  const numbers = filteredArray.map((item) => Number(item));
+  return numbers;
 };
 
-cleanUpNumberFromWhitespace = (array) => {
-  return array.map((item) => {
-    const n = item.trim();
-    return Number(n);
-  });
-};
-
-splitArrayByWhiteSpace = (array) => {
-  return array.split(" ");
-};
-
-function calculatePoints(cards, index) {
+function calculatePoints(cards) {
   let totalPoints = 0;
 
-  cards.forEach((card) => {
+  cards.forEach((card, index) => {
     const elements = splitElementParts(card);
-    let ourNumbers = splitArrayByWhiteSpace(elements[0]);
-    ourNumbers = cleanUpFromEmptyStrings(ourNumbers);
-    const winningNumbers = elements[1].trim().split(" ").map(Number);
+    const ourNumbers = splitArrayByWhiteSpace(elements[0]);
+    const winningNumbers = splitArrayByWhiteSpace(elements[1]);
 
     const cardResult = calculatePointsForOneCard(ourNumbers, winningNumbers);
 
     totalPoints += cardResult;
+
     console.log("Card " + (index + 1) + ": " + cardResult);
   });
-
   console.log("_____________________________");
   console.log("TotalPoints: ", totalPoints);
 }
